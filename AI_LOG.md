@@ -81,3 +81,22 @@ This log documents the interactive collaboration, prompts, generated artifacts, 
 
 ---
 
+## Entry 7: TDD Green Phase — REST API & SSE Real-time Streaming
+- **Prompt / Requirement**: Implement REST API route handlers (`/api/menu`, `/api/orders`, `/api/orders/:id`, `/api/orders/:id/status`, `/api/orders/:id/stream`), rate limiting, unified error formatting, and optional admin authorization.
+- **AI Action / Generation**:
+  - Implemented `src/lib/http/response.ts` creating standardized success and error responses (`{ error: { code, message, details? } }`) without exposing stack traces.
+  - Implemented `src/lib/http/rateLimiter.ts` protecting `POST /api/orders` with sliding window rate limiting.
+  - Implemented `src/lib/http/auth.ts` enforcing `x-admin-token` or Bearer token on administrative mutations when `ADMIN_TOKEN` is set.
+  - Implemented route handlers:
+    - `GET /api/menu`
+    - `GET` & `POST /api/orders`
+    - `GET` & `DELETE /api/orders/[id]`
+    - `PATCH /api/orders/[id]/status`
+    - `GET /api/orders/[id]/stream` (Server-Sent Events)
+- **Review / Issues Found & Resolved**:
+  - *Zod 4 Issue*: In Zod 4, issues are located on `error.issues` rather than `error.errors`. Adjusted `errorResponse` to read `error.issues?.[0]?.message || error.errors?.[0]?.message`.
+  - *Verification*: Executed `npm test` (all 52 tests passing across 8 suites) and `npm run lint` (zero warnings/errors).
+- **Commit**: `feat: implement REST API handlers, SSE streaming, rate limiting, and auth guards (green)`
+
+---
+
