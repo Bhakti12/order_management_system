@@ -71,3 +71,13 @@ This log documents the interactive collaboration, prompts, generated artifacts, 
 
 ---
 
+## Entry 6: TDD Red Phase — REST API Route Handlers
+- **Prompt / Requirement**: Build Next.js App Router REST API endpoints under `/api` (`GET /api/menu`, `POST /api/orders`, `GET /api/orders`, `GET /api/orders/:id`, `PATCH /api/orders/:id/status`, `DELETE /api/orders/:id`). Write comprehensive tests covering validation, server-side price recalculation, duplicate merging, malformed JSON handling, 404, 409, rate limiting, and optional `ADMIN_TOKEN` security.
+- **AI Action / Generation**:
+  - Authored `tests/api/menu.test.ts` to test menu item serving.
+  - Authored `tests/api/orders.test.ts` with 10 integration test cases verifying order lifecycle, errors, and security guards.
+  - Verified failures via `npm test` (Red phase).
+- **Commit**: `test: add integration tests for menu and order API route handlers (red)`
+
+---
+
