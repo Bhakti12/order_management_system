@@ -18,3 +18,16 @@ This log documents the interactive collaboration, prompts, generated artifacts, 
 - **Commit**: `chore: initialize project scaffold, tooling, and test setup`
 
 ---
+
+## Entry 2: TDD Red Phase — Validation Schemas & Status Timings
+- **Prompt / Requirement**: Build core domain validation and status simulation logic. Write failing unit tests first for phone formatting, customer data, order item rules, duplicate merging, forward status transitions, cancellation guards, and elapsed time status derivation using fake timers.
+- **AI Action / Generation**:
+  - Authored `tests/unit/validation.test.ts` covering phone regex, trimming, string lengths, item quantity bounds (1-20), empty cart rejection, and duplicate line merging.
+  - Authored `tests/unit/statusTiming.test.ts` testing fake timers for status progression (0-15s received, 15-45s preparing, 45-90s out for delivery, >90s delivered), manual status override, forward transition checks, and cancellation permissions.
+  - Executed `npm test` to verify both suites fail (Red phase).
+- **Review / Verification**:
+  - Test suites failed as expected due to missing implementation modules.
+- **Commit**: `test: add unit tests for validation schemas and status timing (red)`
+
+---
+
