@@ -56,3 +56,18 @@ This log documents the interactive collaboration, prompts, generated artifacts, 
 
 ---
 
+## Entry 5: TDD Green Phase — Persistence & Business Services
+- **Prompt / Requirement**: Implement domain services (`menuService`, `orderService`) and repository implementations (`InMemoryOrderRepository`, `PostgresOrderRepository` using Drizzle ORM and Neon, and repository factory `getOrderRepository()`).
+- **AI Action / Generation**:
+  - Implemented `src/lib/http/errors.ts` providing specialized domain errors (`ValidationError`, `MenuItemNotFoundError`, `OrderNotFoundError`, `InvalidStatusTransitionError`, `CannotCancelOrderError`, `RateLimitExceededError`, `UnauthorizedError`).
+  - Implemented `src/services/menuService.ts` with 10 seeded food items across pizza, burgers, pasta, salads, desserts, and drinks with integer cent prices and Unsplash images.
+  - Implemented `src/repositories/inMemoryOrderRepository.ts` for isolated test and local execution.
+  - Implemented `src/repositories/schema.ts`, `drizzle.config.ts`, and `src/repositories/postgresOrderRepository.ts` for Neon serverless PostgreSQL persistence.
+  - Implemented `src/services/orderService.ts` ensuring server price recalculation, order persistence, chronological sorting, forward status updates, and cancellation guards.
+- **Review / Issues Found & Resolved**:
+  - *Syntax Issue*: In `src/repositories/schema.ts`, `.not null()` was typed instead of `.notNull()`, triggering an ESLint parse error. Corrected immediately.
+  - *Verification*: Executed `npm test` (all 37 tests passing) and `npm run lint` (zero warnings/errors).
+- **Commit**: `feat: implement menu service, order service, in-memory and postgres repositories (green)`
+
+---
+
