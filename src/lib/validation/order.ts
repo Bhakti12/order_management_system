@@ -17,8 +17,7 @@ export const customerSchema = z.object({
   phone: z
     .string()
     .trim()
-    .min(7, "Phone number is too short")
-    .max(25, "Phone number is too long")
+    .min(1, "Please enter a valid 10-digit or international phone number")
     .refine((val) => phoneRegex.test(val), {
       message: "Please enter a valid 10-digit or international phone number",
     }),
