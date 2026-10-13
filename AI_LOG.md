@@ -31,3 +31,17 @@ This log documents the interactive collaboration, prompts, generated artifacts, 
 
 ---
 
+## Entry 3: TDD Green Phase — Domain Types, Validation & Status Timing
+- **Prompt / Requirement**: Implement domain models, Zod validation schemas, and time-based status simulation engine to satisfy all 19 unit tests.
+- **AI Action / Generation**:
+  - Created `src/types/index.ts` defining `OrderStatus`, `MenuItem`, `CustomerInfo`, `OrderItem`, `Order`, and API response contracts.
+  - Implemented `src/lib/config/statusTiming.ts` with configurable durations (15s received, 30s preparing, 45s out for delivery, then delivered), `deriveSimulatedStatus`, `isValidForwardTransition`, and `canCancelOrder`.
+  - Implemented `src/lib/validation/order.ts` with phone regex (supporting 10-digit and E.164 formats), trimmed customer schema, quantity constraints (1-20), empty cart rejection, and automatic duplicate item line merging.
+  - Migrated `vitest.config.ts` to `vitest.config.mjs` using `import.meta.url` for path alias resolution without deprecation warnings.
+- **Review / Verification**:
+  - Ran `npm test`: All 19 tests passed.
+  - Ran `npm run lint`: Passed with zero warnings or errors.
+- **Commit**: `feat: implement domain types, order validation schemas, and status timing engine (green)`
+
+---
+
