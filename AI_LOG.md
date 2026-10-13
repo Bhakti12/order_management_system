@@ -100,3 +100,15 @@ This log documents the interactive collaboration, prompts, generated artifacts, 
 
 ---
 
+## Entry 8: TDD Red Phase — Frontend State & UI Components
+- **Prompt / Requirement**: Write component and state tests for `CartContext` (add, remove, clamp quantity 1-20, totals, localStorage persistence), `MenuItemCard` (price display in dollars, add to cart), `CheckoutForm` (client validation, inline errors, submission loading state, API error alerts), and `OrderStatusStepper` (progression across stages, cancelled alert).
+- **AI Action / Generation**:
+  - Authored `tests/components/CartContext.test.tsx`
+  - Authored `tests/components/MenuItemCard.test.tsx`
+  - Authored `tests/components/CheckoutForm.test.tsx`
+  - Authored `tests/components/OrderStatusStepper.test.tsx`
+  - Verified failures via `npm test` (Red phase).
+- **Commit**: `test: add component tests for cart, menu item, checkout form, and status stepper (red)`
+
+---
+
