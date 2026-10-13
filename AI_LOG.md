@@ -45,3 +45,14 @@ This log documents the interactive collaboration, prompts, generated artifacts, 
 
 ---
 
+## Entry 4: TDD Red Phase — Repositories & Services
+- **Prompt / Requirement**: Define repository persistence contract (`OrderRepository`) and business services (`menuService`, `orderService`). Author failing tests covering menu retrieval, price recalculation on the server, in-memory repository CRUD, elapsed-time status progression, forward transitions, and cancellation limits.
+- **AI Action / Generation**:
+  - Authored `tests/unit/menuService.test.ts` (seeded items, integer prices, categories, Unsplash images).
+  - Authored `tests/unit/inMemoryRepository.test.ts` (create, findById, findAll, update, delete, clear).
+  - Authored `tests/unit/orderService.test.ts` (server recalculates prices, rejects unknown items, elapsed-time progression with fake timers, 404 for missing order, 409 for invalid forward transitions, cancellation rules before dispatch, reverse chronological listing).
+  - Verified failures via `npm test` (Red phase).
+- **Commit**: `test: add unit tests for repository and domain services (red)`
+
+---
+
