@@ -26,7 +26,7 @@ export const customerSchema = z.object({
 export const orderItemInputSchema = z.object({
   menuItemId: z.string().trim().min(1, "Menu item ID is required"),
   quantity: z
-    .number({ invalid_type_error: "Quantity must be a number" })
+    .number({ message: "Quantity must be a number" })
     .int("Quantity must be an integer")
     .min(1, "Quantity must be at least 1")
     .max(20, "Quantity cannot exceed 20"),
@@ -55,7 +55,7 @@ export const createOrderSchema = z.object({
 
 export const updateOrderStatusSchema = z.object({
   status: z.enum(["preparing", "out_for_delivery", "delivered"], {
-    errorMap: () => ({ message: "Status must be one of: preparing, out_for_delivery, delivered" }),
+    message: "Status must be one of: preparing, out_for_delivery, delivered",
   }),
 });
 

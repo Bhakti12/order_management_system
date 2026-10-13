@@ -114,6 +114,28 @@ describe("Orders API Route Handlers", () => {
       const json = await res.json();
       expect(json.error.code).toBe("VALIDATION_ERROR");
     });
+
+    it("returns 429 when client rate limit is exceeded", async () => {
+      const makeRequest = () =>
+        createOrderHandler(
+          new Request("http://localhost:3000/api/orders", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "x-forwarded-for": "10.0.0.1" },
+            body: JSON.stringify(validOrderPayload),
+          })
+        );
+
+      // Fire 30 requests
+      for (let i = 0; i < 30; i++) {
+        await makeRequest();
+      }
+
+      // The 31st request triggers rate limit
+      const rateLimitedRes = await makeRequest();
+      expect(rateLimitedRes.status).toBe(429);
+      const json = await rateLimitedRes.json();
+      expect(json.error.code).toBe("RATE_LIMIT_EXCEEDED");
+    });
   });
 
   describe("GET /api/orders and GET /api/orders/:id", () => {

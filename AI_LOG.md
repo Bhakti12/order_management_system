@@ -128,3 +128,26 @@ This log documents the interactive collaboration, prompts, generated artifacts, 
 
 ---
 
+## Entry 10: App Pages, Real-Time Tracking & Verification
+- **Prompt / Requirement**: Build storefront home page (`src/app/page.tsx`), order tracking page (`src/app/orders/[id]/page.tsx`), order history (`src/app/orders/page.tsx`), `Navbar`, `MenuGrid`, and `StickyCartBanner`. Complete live SSE stream listener with automatic 3s polling fallback, cancel order action, reviewer testing controls, and format utilities.
+- **AI Action / Generation**:
+  - Implemented `Navbar` with brand header, order history link, and cart badge.
+  - Implemented `MenuGrid` with search filtering and category tabs.
+  - Implemented `CartDrawer` with slide-over drawer, quantity modifiers, subtotal/total calculation, and embedded checkout submission.
+  - Implemented `StickyCartBanner` for seamless mobile UX.
+  - Implemented `src/app/orders/[id]/page.tsx` featuring live Server-Sent Events, polling fallback, cancel order mutation, customer/item breakdown, and fast-forward reviewer tools.
+  - Implemented `src/app/orders/page.tsx` displaying order history with status color-coded badges.
+  - Updated `src/app/layout.tsx` with `CartProvider`, `Navbar`, and responsive layout structure.
+  - Authored `tests/unit/format.test.ts` and enhanced `tests/api/orders.test.ts` with rate-limit breach assertion.
+- **Review / Issues Found & Resolved**:
+  - *TypeScript & Zod 4 Compatibility*: During `npm run build`, Next.js typechecking flagged `invalid_type_error` and `errorMap` in `src/lib/validation/order.ts`. Updated to Zod 4's native `{ message: "..." }` signature.
+  - *ESLint Cleanup*: Removed unused imports in `src/app/orders/[id]/page.tsx` (`OrderStatus`) and `src/components/StickyCartBanner.tsx` (`ShoppingBag`).
+  - *Verification*:
+    - `npm test`: 71/71 tests passing across 13 test files.
+    - `npm run test:coverage`: 86.33% line coverage across the codebase (100% on core services and validation).
+    - `npm run lint`: 0 warnings, 0 errors.
+    - `npm run build`: Compiled cleanly generating all static and dynamic App Router routes.
+- **Commit**: `feat: implement storefront, order tracking, history pages, and real-time SSE stream with polling fallback`
+
+---
+
