@@ -161,3 +161,13 @@ This log documents the interactive collaboration, prompts, generated artifacts, 
 
 ---
 
+## Final review pass
+- **Issues Found**:
+  - **.env.example Bug**: Optional variables (`DATABASE_URL`, `ADMIN_TOKEN`) were set or left un-commented, which causes a copied `.env.local` to attempt connecting to a non-existent Postgres database and fail order placement out of the box.
+  - **Admin Token vs UI Buttons**: Configuring `ADMIN_TOKEN` causes the frontend demo buttons (Cancel Order and Fast-Forward Status) to fail with `401 Unauthorized` because the client UI does not send the `x-admin-token` header.
+  - **README Overclaims & Inaccuracies**: The README claimed "production-grade" in the intro; stated the rate limiter was "sliding-window" instead of fixed-window (30 req/min in-memory per instance); claimed "ensuring 100% reliability" for SSE; lacked Windows PowerShell syntax for `npm run db:push`; lacked a dedicated "Known limitations" section; and lacked explicit warnings regarding `ADMIN_TOKEN` on demo deployments.
+- **Fixes Applied**:
+  - Commented out optional `DATABASE_URL` and `ADMIN_TOKEN` in `.env.example` with clear comments explaining their usage so copied `.env.local` runs out of the box with the default in-memory repository.
+  - Updated `README.md` to clarify that `ADMIN_TOKEN` is optional and recommended to remain unset for demo deployments to avoid 401 errors on demo buttons. Strongly recommended `DATABASE_URL` for Vercel deployments to prevent state loss across serverless instances.
+  - Updated `README.md` intro to "full-stack"; changed rate limiter to "fixed-window (30 requests per minute per IP)" per serverless instance with Upstash Redis noted as the production fix; replaced SSE reliability overclaim with client 3-second polling fallback explanation; added PowerShell syntax for `db:push`; added a "Known limitations" section; and updated the clone URL to `https://github.com/Bhakti12/order_management_system`.
+
