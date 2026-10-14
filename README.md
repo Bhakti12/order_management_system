@@ -1,6 +1,6 @@
 # FlavorCraft — Food Delivery Order Management System
 
-A production-grade, full-stack food delivery Order Management System built with **Next.js (App Router)**, **TypeScript (Strict Mode)**, **Tailwind CSS**, **Zod**, and **Vitest**.
+A full-stack food delivery Order Management System built with **Next.js (App Router)**, **TypeScript (Strict Mode)**, **Tailwind CSS**, **Zod**, and **Vitest**.
 
 Developed following strict **Test-Driven Development (TDD)**, the application features real-time order tracking via Server-Sent Events (SSE) with polling fallback, serverless status simulation, zero-trust price recalculation, and a repository persistence layer supporting both in-memory and Neon PostgreSQL (via Drizzle ORM).
 
@@ -97,7 +97,7 @@ flowchart TD
    - Invalid skips or backward transitions return `409 Conflict`.
    - Orders can only be cancelled before dispatch (`received` or `preparing`). Cancellation attempts after dispatch return `409 Conflict`.
 7. **Security & Resiliency**:
-   - In-memory sliding-window rate limiter protecting `POST /api/orders`.
+   - In-memory fixed-window (30 requests per minute per IP) rate limiter protecting `POST /api/orders`. Because it is in-memory, limits apply per serverless instance; a shared store (Upstash Redis) would be the production fix.
    - Optional `ADMIN_TOKEN` protection on status override and cancellation endpoints.
    - Unified error response envelope `{ error: { code, message, details? } }` with zero stack-trace leakage.
 
@@ -119,7 +119,7 @@ flowchart TD
 
 ### 4. SSE with Polling Fallback
 - **Decision**: Next.js route handlers implement a `ReadableStream` emitting `text/event-stream` for live updates, with client-side detection falling back to `setInterval` polling if `EventSource` errors.
-- **Trade-off**: Provides real-time responsiveness for modern browsers while ensuring 100% reliability on restrictive proxies or serverless environments with strict response streaming timeouts.
+- **Trade-off**: Provides real-time responsiveness for modern browsers; the client falls back to 3-second polling if the stream drops or the platform ends the long-lived connection.
 
 ---
 
@@ -301,7 +301,7 @@ data: {"id":"ord-123","status":"preparing",...}
 ### Installation
 ```bash
 # 1. Clone repository
-git clone <your-repo-url>
+git clone https://github.com/Bhakti12/order_management_system
 cd order_management_system
 
 # 2. Install dependencies
@@ -352,7 +352,7 @@ npm run build
 | Variable | Required | Default | Description |
 |---|---|---|---|
 | `DATABASE_URL` | No | *None (In-Memory)* | Postgres connection string for Neon. When unset, `InMemoryOrderRepository` is used. |
-| `ADMIN_TOKEN` | No | *None (Open)* | Secret token for manual status update (`PATCH`) and cancellation (`DELETE`). If unset, endpoints are open for easy testing. |
+| `ADMIN_TOKEN` | No | *None (Open)* | Optional secret token for manual status update (`PATCH`) and cancellation (`DELETE`). **Note:** UI demo buttons (Cancel, fast-forward) do not send this token and will return `401 Unauthorized` if this is set; recommend leaving unset for demo deployments. |
 | `NEXT_PUBLIC_APP_URL` | No | `http://localhost:3000` | Base public URL for client requests. |
 
 ---
@@ -368,17 +368,31 @@ npm run build
    ```
 
 ### Step 2: Push Database Schema
-```bash
-DATABASE_URL="your-neon-connection-string" npm run db:push
-```
+- **macOS / Linux**:
+  ```bash
+  DATABASE_URL="your-neon-connection-string" npm run db:push
+  ```
+- **Windows PowerShell**:
+  ```powershell
+  $env:DATABASE_URL="your-neon-connection-string"; npm run db:push
+  ```
 
 ### Step 3: Deploy to Vercel
 1. Push this repository to GitHub.
 2. In the [Vercel Dashboard](https://vercel.com), click **Add New Project** and import your repository.
 3. In **Environment Variables**, add:
-   - `DATABASE_URL`: `postgresql://...`
-   - `ADMIN_TOKEN`: `your-custom-admin-secret`
+   - `DATABASE_URL` (*strongly recommended*): `postgresql://...` (without this, the default in-memory storage is not shared across serverless instances and can lose orders between requests).
+   - `ADMIN_TOKEN` (*optional*): Leave unset for demo deployments. If set, the Cancel and fast-forward demo buttons in the UI will return `401 Unauthorized` because the demo UI does not send this token.
 4. Click **Deploy**. Vercel will automatically build the Next.js App Router application.
+
+---
+
+## ⚠️ Known Limitations
+
+- **In-Memory Rate Limiter**: Rate limiting is tracked in-memory and enforced per serverless instance rather than globally.
+- **In-Memory Repository**: The in-memory repository is not shared across serverless instances; without Neon Postgres (`DATABASE_URL`), order state can be lost between serverless requests.
+- **SSE Platform Timeouts**: Serverless platforms or edge proxies may terminate long-lived SSE connections due to execution timeouts; the client's 3-second polling fallback covers this seamlessly.
+- **No Customer Authentication**: There is currently no authentication or login system for customers; orders are accessed via unique order IDs.
 
 ---
 
